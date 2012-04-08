@@ -321,14 +321,17 @@ int main(int argc, char *argv[])
     /** FLOAT **/
     printf("1/2 Set float: ");
     modbus_set_float(UT_REAL, tab_rp_registers);
-    if (tab_rp_registers[1] == (UT_IREAL >> 16) &&
-        tab_rp_registers[0] == (UT_IREAL & 0xFFFF)) {
+    if (tab_rp_registers[0] == (UT_IREAL >> 16) &&
+        tab_rp_registers[1] == (UT_IREAL & 0xFFFF)) {
         printf("OK\n");
     } else {
-        printf("FAILED (%x != %x)\n",
-               *((uint32_t *)tab_rp_registers), UT_IREAL);
+        printf("FAILED (%x%x != %x)\n",
+               tab_rp_registers[0], tab_rp_registers[1], UT_IREAL);
         goto close;
     }
+
+    /* Write w/o answer */
+    modbus_write_registers(ctx, UT_REGISTERS_ADDRESS+1, 2, tab_rp_registers);
 
     printf("2/2 Get float: ");
     real = modbus_get_float(tab_rp_registers);

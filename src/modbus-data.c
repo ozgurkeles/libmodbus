@@ -25,6 +25,10 @@
 #include <string.h>
 #include <assert.h>
 
+/* For ntohl and htol. FIXME <ws2tcpip.h> for Windows? */
+#include <netinet/in.h>
+
+
 /* Sets many bits from a single byte value (all 8 bits of the byte value are
    set) */
 void modbus_set_bits_from_byte(uint8_t *dest, int index, const uint8_t value)
@@ -79,7 +83,8 @@ float modbus_get_float(const uint16_t *src)
     float f;
     uint32_t i;
 
-    i = (((uint32_t)src[1]) << 16) + src[0];
+    i = (((uint32_t)src[0]) << 16) + src[1];
+    i = ntohl(i);
     memcpy(&f, &i, sizeof(float));
 
     return f;
@@ -91,6 +96,7 @@ void modbus_set_float(float f, uint16_t *dest)
     uint32_t i;
 
     memcpy(&i, &f, sizeof(uint32_t));
-    dest[0] = (uint16_t)i;
-    dest[1] = (uint16_t)(i >> 16);
+    i = htonl(i);
+    dest[0] = (uint16_t)(i >> 16);
+    dest[1] = (uint16_t)i;
 }
