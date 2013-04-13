@@ -24,6 +24,7 @@
 #endif
 #include <string.h>
 #include <assert.h>
+#include <byteswap.h>
 
 #include "modbus.h"
 
@@ -82,6 +83,17 @@ float modbus_get_float(const uint16_t *src)
     uint32_t i;
 
     i = (((uint32_t)src[1]) << 16) + src[0];
+    memcpy(&f, &i, sizeof(float));
+
+    return f;
+}
+
+float modbus_get_float_swapped(const uint16_t *src)
+{
+    float f;
+    uint32_t i;
+
+    i = bswap_32((((uint32_t)src[1]) << 16) + src[0]);
     memcpy(&f, &i, sizeof(float));
 
     return f;

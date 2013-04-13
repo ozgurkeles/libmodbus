@@ -226,6 +226,7 @@ EXPORT void modbus_set_bits_from_bytes(uint8_t *dest, int index, unsigned int nb
                                        const uint8_t *tab_byte);
 EXPORT uint8_t modbus_get_byte_from_bits(const uint8_t *src, int index, unsigned int nb_bits);
 EXPORT float modbus_get_float(const uint16_t *src);
+EXPORT float modbus_get_float_swapped(const uint16_t *src);
 EXPORT void modbus_set_float(float f, uint16_t *dest);
 
 #include "modbus-tcp.h"
